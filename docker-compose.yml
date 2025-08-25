@@ -1,0 +1,53 @@
+services:
+  pg-tasks:
+    container_name: pg_tasks
+    image: postgres:17.6
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_DB=tasks
+      - POSTGRES_PASSWORD=123456
+    networks:
+      - jenkins-network
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+
+  jenkins-server:
+    container_name: jenkins_docker
+    restart: on-failure
+    image: jenkins/jenkins:jdk17
+    ports:
+      - 8081:8080
+      - 50000:50000
+    environment:
+      - DOCKER_TLS_CERTDIR=/certs
+    networks:
+      - jenkins-network
+    volumes:
+      - jenkins_data:/var/jenkins_home
+
+  tomcat-server:
+    container_name: tomcat_server
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: tomcat-server:8.5.50
+    ports:
+      - 8080:8080
+    networks:
+      - jenkins-network
+    depends_on:
+      - pg-tasks
+    environment:
+      - DATABASE_HOST=pg-tasks
+      - DATABASE_PORT=5432
+
+networks:
+  jenkins-network:
+    driver: bridge
+
+volumes:
+  jenkins_data:
+  pg_data:
+
+
