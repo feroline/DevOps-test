@@ -1,0 +1,6 @@
+[submodule "tasks-backend"]
+	path = tasks-backend
+	url = https://github.com/feroline/tasks-backend
+[submodule "tasks-frontend"]
+	path = tasks-frontend
+	url = https://github.com/feroline/tasks-frontend
