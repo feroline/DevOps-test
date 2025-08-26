@@ -15,7 +15,9 @@ services:
   jenkins-server:
     container_name: jenkins_docker
     restart: on-failure
-    image: jenkins/jenkins:jdk17
+    build: 
+      context: ./jenkins-custom
+    image: jenkins-with-maven
     ports:
       - 8081:8080
       - 50000:50000
