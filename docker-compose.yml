@@ -44,12 +44,52 @@ services:
       - DATABASE_HOST=pg-tasks
       - DATABASE_PORT=5432
 
+  sonarqube: 
+    container_name: sonarqube
+    image: sonarqube:9.9.8-community
+    ports: 
+      - "9000:9000"
+    networks:
+      - sonarnet
+      - jenkins-network
+    environment:
+      -  sonar.jdbc.url=jdbc:postgresql://pg-sonar:5432/sonar
+    depends_on:
+      - pg-sonar
+    volumes:
+      - sonarqube_cof:/opt/sonarqube/conf
+      - sonarqube_data:/opt/sonarqube/data
+      - sonarqube_extensions:/opt/sonarqube/extensions
+      - sonarqube_bundled-plugins:/opt/sonarqube/lib/bundled-plugins
+      - sonarqube_logs:/opt/sonarqube/logs
+
+  pg-sonar: 
+    container_name: pg-sonar
+    image: postgres:17.6
+    networks:
+      - sonarnet
+    environment:
+      - POSTGRES_USER=sonar
+      - POSTGRES_PASSWORD=sonar
+    volumes:
+      - postgresql:/var/lib/postgresql
+      - postgresql:/var/lib/postgresql/data
+
 networks:
   jenkins-network:
     driver: bridge
+  sonarnet: 
 
 volumes:
   jenkins_data:
   pg_data:
+  sonarqube_cof:
+  sonarqube_data:
+  sonarqube_extensions:
+  sonarqube_bundled-plugins:
+  sonarqube_logs:
+  postgresql:
+  postgresql_data: 
+
 
 
