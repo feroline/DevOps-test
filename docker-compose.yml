@@ -3,7 +3,7 @@ services:
     container_name: pg_tasks
     image: postgres:17.6
     ports:
-      - 5432:5432
+      - 5433:5432
     environment:
       - POSTGRES_DB=tasks
       - POSTGRES_PASSWORD=123456
@@ -46,7 +46,7 @@ services:
 
   sonarqube: 
     container_name: sonarqube
-    image: sonarqube:9.9.8-community
+    image: sonarqube:25.9.0.112764-community
     ports: 
       - "9000:9000"
     networks:
@@ -66,13 +66,14 @@ services:
   pg-sonar: 
     container_name: pg-sonar
     image: postgres:17.6
+    ports:
+      - "5434:5432"
     networks:
       - sonarnet
     environment:
       - POSTGRES_USER=sonar
       - POSTGRES_PASSWORD=sonar
     volumes:
-      - postgresql:/var/lib/postgresql
       - postgresql:/var/lib/postgresql/data
 
 networks:
